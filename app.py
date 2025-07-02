@@ -160,5 +160,5 @@ if st.button("🚀 Run Scheduler"):
             else:
                 st.error("❌ No optimal or feasible solution was found within the time limit.")
                 st.write(f"Solver status: {solver.StatusName(status)}")
-        except Exception as e:
-            st.error(f"An error occurred during the scheduling process: {e}")
+       except Exception as e:
+            st.exception(e)
