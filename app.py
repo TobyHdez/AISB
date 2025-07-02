@@ -1,4 +1,4 @@
-# app.py (Final Version with Download Buttons)
+# app.py (Final, Corrected Version)
 import streamlit as st
 import pandas as pd
 from ortools.sat.python import cp_model
@@ -25,7 +25,7 @@ from scheduler import (
     get_fulfillment_stats
 )
 
-# --- NEW: Helper function to convert DataFrame to Excel in memory ---
+# --- Helper function to convert DataFrame to Excel in memory ---
 def to_excel(df: pd.DataFrame):
     output = io.BytesIO()
     # Use the openpyxl engine to write the excel file
@@ -85,7 +85,6 @@ if st.button("🚀 Run Scheduler"):
                 student_schedules, unscheduled_students, course_offerings, teacher_schedules = \
                     process_results(solver, variables, student_data, course_data, periods, teacher_data)
                 
-                # --- Create DataFrames from results ---
                 student_schedules_df = create_student_schedules_df(student_schedules, periods)
                 unscheduled_students_df = create_unscheduled_students_df(unscheduled_students)
                 course_enrollment_df = create_course_enrollment_df(course_offerings)
@@ -105,60 +104,36 @@ if st.button("🚀 Run Scheduler"):
                 with tab1:
                     st.subheader("Student Master Schedules")
                     st.dataframe(student_schedules_df)
-                    st.download_button(
-                        label="📥 Download as Excel",
-                        data=to_excel(student_schedules_df),
-                        file_name="student_schedules.xlsx",
-                        mime="application/vnd.ms-excel"
-                    )
+                    st.download_button(label="📥 Download as Excel", data=to_excel(student_schedules_df), file_name="student_schedules.xlsx", mime="application/vnd.ms-excel")
                 
                 with tab2:
                     st.subheader("Students with Unfulfilled Requests")
                     if not unscheduled_students_df.empty:
                         st.dataframe(unscheduled_students_df)
-                        st.download_button(
-                            label="📥 Download as Excel",
-                            data=to_excel(unscheduled_students_df),
-                            file_name="unscheduled_students.xlsx",
-                            mime="application/vnd.ms-excel"
-                        )
+                        st.download_button(label="📥 Download as Excel", data=to_excel(unscheduled_students_df), file_name="unscheduled_students.xlsx", mime="application/vnd.ms-excel")
                     else:
                         st.write("🎉 All students received a full schedule!")
 
                 with tab3:
                     st.subheader("Course & Period Enrollment")
                     st.dataframe(course_enrollment_df)
-                    st.download_button(
-                        label="📥 Download as Excel",
-                        data=to_excel(course_enrollment_df),
-                        file_name="course_enrollment.xlsx",
-                        mime="application/vnd.ms-excel"
-                    )
+                    st.download_button(label="📥 Download as Excel", data=to_excel(course_enrollment_df), file_name="course_enrollment.xlsx", mime="application/vnd.ms-excel")
 
                 with tab4:
                     st.subheader("Master Schedule Grid (Courses x Periods)")
                     st.dataframe(master_grid_df)
-                    st.download_button(
-                        label="📥 Download as Excel",
-                        data=to_excel(master_grid_df),
-                        file_name="master_schedule_grid.xlsx",
-                        mime="application/vnd.ms-excel"
-                    )
+                    st.download_button(label="📥 Download as Excel", data=to_excel(master_grid_df), file_name="master_schedule_grid.xlsx", mime="application/vnd.ms-excel")
                 
                 with tab5:
                     st.subheader("Teacher Schedules")
                     if teacher_data:
                         st.dataframe(teacher_schedules_df)
-                        st.download_button(
-                            label="📥 Download as Excel",
-                            data=to_excel(teacher_schedules_df),
-                            file_name="teacher_schedules.xlsx",
-                            mime="application/vnd.ms-excel"
-                        )
+                        st.download_button(label="📥 Download as Excel", data=to_excel(teacher_schedules_df), file_name="teacher_schedules.xlsx", mime="application/vnd.ms-excel")
                     else:
                         st.info("No teacher data was uploaded, so teacher schedules were not generated.")
             else:
                 st.error("❌ No optimal or feasible solution was found within the time limit.")
                 st.write(f"Solver status: {solver.StatusName(status)}")
-       except Exception as e:
+        
+        except Exception as e:
             st.exception(e)
